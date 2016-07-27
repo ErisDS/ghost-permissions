@@ -1,0 +1,31 @@
+{
+  "name": "ghost-permissions",
+  "version": "1.0.0",
+  "description": "Ghost permissions, a reference implementation",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vkandy/ghost-permissions.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/vkandy/ghost-permissions/issues"
+  },
+  "homepage": "https://github.com/vkandy/ghost-permissions#readme",
+  "dependencies": {
+    "ajv": "^4.1.7",
+    "bluebird": "^3.4.1",
+    "commander": "^2.9.0",
+    "express": "^4.14.0",
+    "lodash": "^4.13.1",
+    "sqlite3": "^3.1.4"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3",
+    "should": "^10.0.0"
+  }
+}
