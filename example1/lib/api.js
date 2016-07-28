@@ -2,8 +2,7 @@
  * API proxies operations on model. All calls here are protected by an authorizer.
  */
 
-var authorizer = require('../../lib/abac/authorizer'),
-    Model      = require('./model');
+var Model = require('./model');
 
 /**
  * Actors that can access this API are: {public, owner}. Rules for each operation are
@@ -16,12 +15,17 @@ function API(subject) {
 }
 
 /**
- * Public can browse but see a subset of attributes.
- * Owner can browse and sees all attributes.
+ * Public can search by {title, status} and see a subset of attributes.
+ * Owner can search by all fields and sees all attributes.
+ *
+ * @param browseRequest e.g., { title: {contains: "a"}, status: "published"}
  */
-API.prototype.browse = function() {
-    authorizer.can(subject, 'Model', 'browse');
-    return this.model.getAll();
+API.prototype.browse = function(browseRequest) {
+    var self = this;
+    authorizer.can(subject, 'Model', 'browse', function(policy){
+        var posts = self.model.getAll();
+        policy.postFilter(posts);
+    });
 };
 
 /**
@@ -34,10 +38,18 @@ API.prototype.read = function(readRequest) {
 };
 
 /**
- * Public can not edit any model.
- * Owner can edit any model that's not 'published'.
+ * Public can not update any model.
+ * Owner can update content any model that's not 'published'.
  */
-API.prototype.edit = function() {
+API.prototype.updateContent = function(title, content) {
+
+};
+
+/**
+ * Public can not publish any model.
+ * Owner can publish any model that's not already 'published'.
+ */
+API.prototype.publish = function() {
 
 };
 
