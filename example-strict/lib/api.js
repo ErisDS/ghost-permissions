@@ -27,7 +27,7 @@ API.prototype.browse = function(browseRequest) {
 
     return abac.authorize(self.subject, browseRequest)
     .then(function(policy) {
-        return self.blog.getAll(browseRequest, policy.$$responseSchema);
+        return self.blog.getAll(browseRequest, policy.constraints.$$responseSchema);
     });
 };
 
@@ -55,8 +55,8 @@ API.prototype.publish = function(publishRequest) {
     var self = this;
 
     return abac.authorize(self.subject, publishRequest)
-    .then(function() {
-        return self.blog.updateStatus(publishRequest);
+    .then(function(policy) {
+        return self.blog.updateStatus(publishRequest, policy.constraints.$$responseSchema);
     });
 };
 

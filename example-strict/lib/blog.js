@@ -39,10 +39,14 @@ function Blog() {
 }
 
 /**
- * Browser operation
+ * Browser operation. Process request and return a response matching the schema.
  */
-Blog.prototype.getAll = function(browseRequest) {
-    return _.filter(this.posts, browseRequest);
+Blog.prototype.getAll = function(browseRequest, responseSchema) {
+    var requiredProperties = _.keys(responseSchema.properties);
+    return _.chain(this.posts)
+    .filter(browseRequest)
+    .map(_.partialRight(_.pick, requiredProperties))
+    .value();
 };
 
 /**
@@ -65,11 +69,13 @@ Blog.prototype.update = function(id, title, content) {
 /**
  * Edit a post.
  */
-Blog.prototype.updateStatus = function(publishRequest) {
+Blog.prototype.updateStatus = function(publishRequest, responseSchema) {
     var object = this.getById(publishRequest.id);
     object.status = publishRequest.status;
     object.published_at = publishRequest.published_at;
-    return object;
+
+    var requiredProperties = _.keys(responseSchema.properties);
+    return _.pick(object, requiredProperties);
 };
 
 /**
