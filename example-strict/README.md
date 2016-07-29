@@ -23,32 +23,32 @@ an operation is permitted or not.
    ```
    In this example, this policy is applied if `subject`'s role is `owner`. 
 5. Constraints also define `$$requestSchema` and `$$responseSchema` like so:
-   ```
-   {
-       pid: 'b9f881c0-5519-11e6-a30f-57c744c3a90e',
-       name: 'public access',
-       effect: 'permit',
-       constraints: {
-           $$roleEquals: 'public',
-           $$requestSchema: {
-               "id": "public:/API/Browse:request",
-               "type": "object",
-               "properties": {
-                   "title": {"type": "string"}                   
+    ```    
+       {
+           pid: 'b9f881c0-5519-11e6-a30f-57c744c3a90e',
+           name: 'public access',
+           effect: 'permit',
+           constraints: {
+               $$roleEquals: 'public',
+               $$requestSchema: {
+                   "id": "public:/API/Browse:request",
+                   "type": "object",
+                   "properties": {
+                       "title": {"type": "string"}
+                   },
+                   "additionalProperties": false
                },
-               "additionalProperties": false
-           },
-           $$responseSchema: {
-               "id": "public:/API/Browse:response",
-               "type": "object",
-               "properties": {
-                   "title": {"type": "string"},
-                   "content": {"type": "string"}
+               $$responseSchema: {
+                   "id": "public:/API/Browse:response",
+                   "type": "object",
+                   "properties": {
+                       "title": {"type": "string"},
+                       "content": {"type": "string"}
+                   }
                }
            }
        }
-   }
-   ```
+    ```
    If `subject`'s role is public, then the incoming request is expected to conform to the schema
    in the constraint.
 6. Evaluator validates the incoming request against the schema. If the operation is permitted for the role
