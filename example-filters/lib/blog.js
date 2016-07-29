@@ -1,5 +1,5 @@
 /*
- * Model is an in-memory data store which reads and writes blog posts.
+ * Blog is an in-memory data store which reads and writes blog posts.
  * NOTE: Calls here are unprotected.
  */
 
@@ -9,7 +9,7 @@ var _ = require('lodash');
  * Sample resource with operations.
  * @constructor
  */
-function Model() {
+function Blog() {
     this.posts = [
         {
             id: '1',
@@ -41,21 +41,21 @@ function Model() {
 /**
  * Browser operation
  */
-Model.prototype.getAll = function() {
-    return this.posts;
+Blog.prototype.getAll = function(browseRequest) {
+    return _.filter(this.posts, browseRequest);
 };
 
 /**
  * Get by id
  */
-Model.prototype.getById = function(id) {
+Blog.prototype.getById = function(id) {
     return _.find(this.posts, {id: id});
 };
 
 /**
  * Edit a post.
  */
-Model.prototype.update = function(id, title, content) {
+Blog.prototype.update = function(id, title, content) {
     var object = this.getById(id);
     object.title = title;
     object.content = content;
@@ -65,9 +65,19 @@ Model.prototype.update = function(id, title, content) {
 /**
  * Edit a post.
  */
-Model.prototype.destroy = function(id) {
+Blog.prototype.updateStatus = function(publishRequest) {
+    var object = this.getById(publishRequest.id);
+    object.status = publishRequest.status;
+    object.published_at = publishRequest.published_at;
+    return object;
+};
+
+/**
+ * Edit a post.
+ */
+Blog.prototype.destroy = function(id) {
     this.posts = _.reject(this.posts, {id: id});
     return this.posts;
 };
 
-module.exports = Model;
+module.exports = Blog;

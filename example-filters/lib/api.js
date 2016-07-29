@@ -2,7 +2,9 @@
  * API proxies operations on model. All calls here are protected by an authorizer.
  */
 
-var Model = require('./model');
+var path = require('path'),
+    abac = require('../abac'),
+    Blog = require('./blog');
 
 /**
  * Actors that can access this API are: {public, owner}. Rules for each operation are
@@ -11,7 +13,7 @@ var Model = require('./model');
  */
 function API(subject) {
     this.subject = subject;
-    this.model = new Model();
+    this.blog = new Blog();
 }
 
 /**
@@ -22,9 +24,10 @@ function API(subject) {
  */
 API.prototype.browse = function(browseRequest) {
     var self = this;
-    authorizer.can(subject, 'Model', 'browse', function(policy){
-        var posts = self.model.getAll();
-        policy.postFilter(posts);
+
+    return abac.authorize(self.subject, browseRequest)
+    .then(function(policy) {
+        return self.blog.getAll(browseRequest, policy.$$responseSchema);
     });
 };
 
@@ -33,24 +36,28 @@ API.prototype.browse = function(browseRequest) {
  * Owner can read any model and sees all attributes.
  */
 API.prototype.read = function(readRequest) {
-    authorizer.can(subject, 'Model', 'browse');
-    return this.model.getAll();
+    throw new Error("Method not implemented");
 };
 
 /**
  * Public can not update any model.
  * Owner can update content any model that's not 'published'.
  */
-API.prototype.updateContent = function(title, content) {
-
+API.prototype.updateContent = function(updateRequest) {
+    throw new Error("Method not implemented");
 };
 
 /**
  * Public can not publish any model.
  * Owner can publish any model that's not already 'published'.
  */
-API.prototype.publish = function() {
+API.prototype.publish = function(publishRequest) {
+    var self = this;
 
+    return abac.authorize(self.subject, publishRequest)
+    .then(function() {
+        return self.blog.updateStatus(publishRequest);
+    });
 };
 
 /**
@@ -58,7 +65,7 @@ API.prototype.publish = function() {
  * Owner can add any model but not all attributes can be added.
  */
 API.prototype.add = function() {
-
+    throw new Error("Method not implemented");
 };
 
 /**
@@ -66,7 +73,7 @@ API.prototype.add = function() {
  * Owner can delete any model.
  */
 API.prototype.delete = function() {
-
+    throw new Error("Method not implemented");
 };
 
 exports.createClient = function(subject) {
